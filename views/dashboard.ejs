@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Time Table</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2a37;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 24px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .card {
+      background: #f8fafc;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 22px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    th {
+      background: #eef2ff;
+      color: #1f2937;
+      font-weight: 700;
+    }
+
+    tr:not(:last-child) td {
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .status {
+      font-weight: 700;
+    }
+
+    .status.confirmed {
+      color: #16a34a;
+    }
+
+    .status.pending {
+      color: #d97706;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Student Dashboard</h1>
+        <p>Check your current timetable and stay on track with upcoming classes.</p>
+      </div>
+      <a class="button" href="#">Refresh</a>
+    </header>
+
+    <div class="card">
+      <h2>Today's Timetable</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Subject</th>
+            <th>Location</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>08:00 - 09:00</td>
+            <td>Mathematics</td>
+            <td>Room 101</td>
+            <td class="status confirmed">Confirmed</td>
+          </tr>
+          <tr>
+            <td>09:15 - 10:15</td>
+            <td>Physics</td>
+            <td>Room 204</td>
+            <td class="status confirmed">Confirmed</td>
+          </tr>
+          <tr>
+            <td>10:30 - 11:30</td>
+            <td>English</td>
+            <td>Room 110</td>
+            <td class="status pending">Pending</td>
+          </tr>
+          <tr>
+            <td>13:00 - 14:00</td>
+            <td>Biology</td>
+            <td>Lab 3</td>
+            <td class="status confirmed">Confirmed</td>
+          </tr>
+          <tr>
+            <td>14:15 - 15:15</td>
+            <td>History</td>
+            <td>Room 112</td>
+            <td class="status confirmed">Confirmed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Weekly Overview</h2>
+      <p>View your full weekly schedule and prepare for each class. Use this dashboard to track changes and stay organized.</p>
+    </div>
+  </div>
+</body>
+</html>
