@@ -26,7 +26,7 @@
         margin-bottom: 8px;
         font-weight: 600;
       }
-      input[type="email"] {
+      input {
         width: 100%;
         padding: 10px;
         border: 1px solid #d7dfe9;
@@ -48,12 +48,33 @@
         margin-top: 10px;
         text-align: center;
       }
+      #otp,
+      #otpLabel {
+        display: none;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d7dfe9;
+        border-radius: 4px;
+        margin-bottom: 12px;
+      }
+      #btn2 {
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div class="card">
       <h2 style="margin: 0 0 12px 0">Sign in with Email</h2>
-      <form action="/send-otp" method="post">
+      <form id="form" method="post">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Enter your name"
+          required
+          autofocus
+        />
         <label for="email">Email address</label>
         <input
           id="email"
@@ -63,11 +84,73 @@
           required
           autofocus
         />
-        <button type="submit">Send OTP</button>
+        <label id="otpLabel" for="otp">OTP</label>
+        <input
+          id="otp"
+          name="otp"
+          type="text"
+          placeholder="Enter OTP"
+          autofocus
+        />
+        <button type="submit" id="btn1">Send OTP</button>
+        <button type="submit" id="btn2">Verify OTP</button>
       </form>
       <div class="note">
         An OTP (one-time password) will be sent to your email.
       </div>
     </div>
   </body>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    emailjs.init("ewZ5mSAWuSxb24NdM");
+    var otp = null;
+
+    const emailInput = document.getElementById("email");
+    const emailForm = document.getElementById("form");
+    const otpInput = document.getElementById("otp");
+    const btn1 = document.getElementById("btn1");
+    const btn2 = document.getElementById("btn2");
+
+    otp = generateOTP();
+    emailForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      console.log(emailInput.value);
+      const templateParams = {
+        email: emailInput.value,
+        otp: otp,
+      };
+      try {
+        await emailjs.send(
+          "service_ndv8amq",
+          "template_qlsb9ij",
+          templateParams,
+        );
+        console.log("OTP sent successfully");
+      } catch (err) {
+        console.error("Failed to send OTP:", err);
+        alert("Failed to send OTP. Please try again.");
+      }
+      emailInput.setAttribute("readonly", true);
+      otpInput.style.display = "block";
+      document.getElementById("otpLabel").style.display = "block";
+      btn1.style.display = "none";
+      btn2.style.display = "block";
+    });
+
+    function generateOTP() {
+      const otp = Math.floor(Math.random() * 1000000).toString();
+      return otp;
+    }
+    
+    btn2.addEventListener("click",(e)=>{
+      e.preventDefault();
+      console.log("Generated OTP:", otp);
+      if(otpInput.value == otp){
+        form.setAttribute("action","/login");
+        form.submit();
+      } else {
+        alert("Invalid OTP. Please try again.");
+      }
+    });
+  </script>
 </html>

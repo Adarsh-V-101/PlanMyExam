@@ -13,32 +13,15 @@ console.log("Form submitted");
     if (!subjectName || !deadlineDescription || !deadlineDate) {
       return;
     }
+    popup("Generating your study plan in background. You will be notified once it's ready.  Feel free to explore the dashboard in the meantime!");
 
-    var listItem = document.createElement("li");
-    listItem.style.border = "1px solid #ddd";
-    listItem.style.padding = "12px";
-    listItem.style.marginBottom = "10px";
-    listItem.style.borderRadius = "6px";
-    listItem.style.backgroundColor = "#fafafa";
 
-    var dateTimeText =
-      deadlineDate ;
-    listItem.innerHTML =
-      "<strong>" +
-      subjectName +
-      "</strong><br>" +
-      deadlineDescription +
-      "<br><em>" +
-      dateTimeText +
-      "</em>";
-
-    document.getElementById("deadline-list").appendChild(listItem);
-
-    const form = document.getElementById("deadline-form")
     form.setAttribute("action", "/userData");
     form.submit();
   });
 
-  async function fetchtimeTable(){
-    
+  function popup(text){
+    var popup = document.getElementById("popup");
+    popup.textContent = text;
+    popup.style.display = "block";
   }
