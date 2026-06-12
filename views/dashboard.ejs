@@ -110,51 +110,34 @@
         <h1>Student Dashboard</h1>
         <p>Check your current timetable and stay on track with upcoming classes.</p>
       </div>
-      <a class="button" href="#">Refresh</a>
+      <a class="button" style="background-color: #30a130;" href="/home">Home</a>
+      <a class="button" href="/dashboard">Refresh</a>
     </header>
-
+    <h1>Current goals</h1>
+    
     <div class="card">
       <h2>Today's Timetable</h2>
       <table>
         <thead>
           <tr>
-            <th>Time</th>
             <th>Subject</th>
-            <th>Location</th>
-            <th>Status</th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>duration</th>
           </tr>
         </thead>
         <tbody>
+            <!-- <p> Subject : <%= dailyTasks %> </p> -->
+          
+          <% for(let i in dailyTasks){ %>
+            <%  let task = dailyTasks[i]; %>
           <tr>
-            <td>08:00 - 09:00</td>
-            <td>Mathematics</td>
-            <td>Room 101</td>
-            <td class="status confirmed">Confirmed</td>
+            <td><%= task.subject %></td>
+            <td><%= task.tasks[i].title %></td>
+            <td class="status confirmed"><%= task.tasks[i].date %></td>
+            <td class="status confirmed"><%= task.tasks[i].duration %></td>
           </tr>
-          <tr>
-            <td>09:15 - 10:15</td>
-            <td>Physics</td>
-            <td>Room 204</td>
-            <td class="status confirmed">Confirmed</td>
-          </tr>
-          <tr>
-            <td>10:30 - 11:30</td>
-            <td>English</td>
-            <td>Room 110</td>
-            <td class="status pending">Pending</td>
-          </tr>
-          <tr>
-            <td>13:00 - 14:00</td>
-            <td>Biology</td>
-            <td>Lab 3</td>
-            <td class="status confirmed">Confirmed</td>
-          </tr>
-          <tr>
-            <td>14:15 - 15:15</td>
-            <td>History</td>
-            <td>Room 112</td>
-            <td class="status confirmed">Confirmed</td>
-          </tr>
+          <% } %>
         </tbody>
       </table>
     </div>
