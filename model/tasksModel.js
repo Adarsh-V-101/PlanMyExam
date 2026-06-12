@@ -7,7 +7,7 @@ const taskSchema = new mongoose.Schema({
     subject: { type: String, required: true },
     tasks:[
         {
-            date: { type: String, required: true },
+            dayNumber : { type: Number, required: true },
             title: { type: String, required: true },
             duration: { type: String, required: true}
         }

@@ -27,7 +27,7 @@ RULES:
 OUTPUT:
 Return ONLY minified JSON. No markdown, no backticks, no thinking tags.
 FORMAT:
-[{"date": "YYYY-MM-DD", "task": "Topic or revision task", "duration": "x hours"}]`;
+[{"dayNumber": "Day 1", "task": "Topic or revision task", "duration": "x hours"}]`;
   try {
     console.log("sending prompt to model..."); // for debugging
     const completion = await openai.chat.completions.create({
@@ -74,7 +74,7 @@ async function saveData(dayObjects, email, subject) {
   console.log(dayObjects);
 
   const task = dayObjects.map((obj) => ({
-    date: obj.date,
+    dayNumber: obj.dayNumber,
     title: obj.task,
     duration: obj.duration,
   }));
