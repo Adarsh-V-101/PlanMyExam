@@ -7,6 +7,7 @@ const routes = require('./routesController/controller');
 const port = 3000;
 const mongoose = require('mongoose');
 const loginMiddleware = require('./utilities/loginMiddleware');
+const startDailyReminder = require('./utilities/cron');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,9 +20,11 @@ app.post('/userData', routes);
 app.post('/login', routes);
 app.get('/home', loginMiddleware, routes);
 app.get('/dashboard',loginMiddleware, routes);
+app.get('/test', routes);
 
 mongoose.connect(process.env.CONNECTION_STRING).then(() => {
-    console.log("Connected to MongoDB");
+  console.log('MongoDB connected');
+  // startDailyReminder(); 
 });
 
 app.listen(port, () => {  

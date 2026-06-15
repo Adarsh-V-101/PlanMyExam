@@ -1,6 +1,7 @@
 const OpenAI = require("openai");
 const taskModel = require("../model/tasksModel");
 const userModel = require("../model/userModel");
+const jwt = require("jsonwebtoken");
 
 const openai = new OpenAI({
   apiKey: process.env.NVIDIA_API_KEY,
@@ -27,7 +28,7 @@ RULES:
 OUTPUT:
 Return ONLY minified JSON. No markdown, no backticks, no thinking tags.
 FORMAT:
-[{"dayNumber": "Day 1", "task": "Topic or revision task", "duration": "x hours"}]`;
+[{"dayNumber": integer (e.g. 1, 2, 3), "task": "Topic or revision task", "duration": "x hours"}]`;
   try {
     console.log("sending prompt to model..."); // for debugging
     const completion = await openai.chat.completions.create({
@@ -40,7 +41,6 @@ FORMAT:
       chat_template_kwargs: { enable_thinking: true },
       stream: false,
     });
-    console.log("model responsed"); // for debugging
 
     const raw = completion.choices[0].message.content;
 
@@ -48,7 +48,6 @@ FORMAT:
     const withoutThinking = raw
       .replace(/<think>[\s\S]*?<\/think>/gi, "")
       .trim();
-    console.log("stripped thinking tags"); // for debugging
     // Strip markdown fences just in case
     const cleaned = withoutThinking.replace(/```json|```/g, "").trim();
 
@@ -58,7 +57,6 @@ FORMAT:
     if (start === -1 || end === -1) {
       throw new Error("No JSON array found in model response");
     }
-    console.log("extracted JSON array"); // for debugging
     const parsed = JSON.parse(cleaned.slice(start, end + 1));
     
     await saveData(parsed, userData.email, userData.subjectName);
@@ -71,7 +69,6 @@ FORMAT:
 
 async function saveData(dayObjects, email, subject) {
   console.log(email, subject);
-  console.log(dayObjects);
 
   const task = dayObjects.map((obj) => ({
     dayNumber: obj.dayNumber,
@@ -79,12 +76,16 @@ async function saveData(dayObjects, email, subject) {
     duration: obj.duration,
   }));
   const userId = await userModel.findOne({ email: email });
-  await taskModel.create({
+  // const userId = jwt.verify(token, process.env.JWT_SECRET_KEY)
+  const newTaskData = await taskModel.create({
     email: email,
     subject: subject,
+    startDate: new Date(),
     tasks: task,
     userId: userId._id,
   });
+  userId.taskId.push(newTaskData._id);
+  await userId.save();
 }
 
 module.exports = {

@@ -4,6 +4,7 @@ const userModel = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const { generateData, saveData } = require("./impFunc");
 const mongoose = require("mongoose");
+const runDailyReminder = require('../utilities/cron');
 
 routes.get("/", (req, res) => {
   res.render("login");
@@ -14,7 +15,7 @@ routes.get("/home", (req, res) => {
 });
 
 routes.get("/dashboard", (req, res) => {
-  jwt.verify(req.cookies.token, "secretKey", async (err, decoded) => {
+  jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
     if (err) {
       return res.redirect("/");
     }
@@ -31,7 +32,7 @@ routes.post("/login", async (req, res) => {
   if (userExists) {
     const token = jwt.sign(
       { email: userExists.email, id: userExists._id },
-      "secretKey",
+      process.env.JWT_SECRET_KEY,
     );
     res.cookie("token", token);
     return res.redirect("/home");
@@ -40,7 +41,7 @@ routes.post("/login", async (req, res) => {
       username: requesteduser.name,
       email: requesteduser.email,
     });
-    const token = jwt.sign({ email: user.email, id: user._id }, "secretKey");
+    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET_KEY);
     res.cookie("token", token);
     res.redirect("/home");
   }
@@ -51,7 +52,7 @@ routes.post("/userData", async (req, res) => {
 
   let date1 = new Date(req.body["deadline-date"]);
   let date2 = new Date();
-  const decoded = jwt.verify(token, "secretKey");
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
   const userData = {
     subjectName: req.body["subject-name"],
     deadline: req.body["deadline-description"],
@@ -67,4 +68,12 @@ routes.post("/userData", async (req, res) => {
   });
 });
 
+routes.get('/test', async (req, res) => {
+  try {
+    await runDailyReminder();
+    res.json({ success: true, message: 'Reminder emails sent!' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 module.exports = routes;

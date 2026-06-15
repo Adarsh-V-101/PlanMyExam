@@ -122,7 +122,7 @@
           <tr>
             <th>Subject</th>
             <th>Title</th>
-            <th>Date</th>
+            <th>Day</th>
             <th>duration</th>
           </tr>
         </thead>
@@ -130,11 +130,11 @@
             <!-- <p> Subject : <%= dailyTasks %> </p> -->
           
           <% for(let i in dailyTasks){ %>
-            <%  let task = dailyTasks[i]; %>
+            <%  let task = dailyTasks[i]; %> 
           <tr>
             <td><%= task.subject %></td>
             <td><%= task.tasks[i].title %></td>
-            <td class="status confirmed"><%= task.tasks[i].date %></td>
+            <td class="status confirmed"><%= task.tasks[i].dayNumber %></td>
             <td class="status confirmed"><%= task.tasks[i].duration %></td>
           </tr>
           <% } %>
