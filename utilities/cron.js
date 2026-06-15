@@ -33,13 +33,11 @@ const startDailyReminder = async () => {
       for (const subjectDoc of user.taskId) {
         // each subject has its own startDate
         const dayNumber = getDayNumber(subjectDoc.startDate);
-        
+
         const matchingTasks = subjectDoc.tasks.filter(
           (t) => t.dayNumber === dayNumber,
         );
-        console.log(
-          `Found ${matchingTasks.length} tasks for today for subject ${subjectDoc.subject}`,
-        ); // for debugging
+
         matchingTasks.forEach((t) => {
           todaysTasks.push({
             subject: subjectDoc.subject,
@@ -49,12 +47,10 @@ const startDailyReminder = async () => {
           });
         });
       }
-      console.log(todaysTasks.length); // for debugging
       if (todaysTasks.length === 0) {
         console.log(`⚠️  No tasks today for ${user.email}`);
         continue;
       }
-
       await sendMail({
         to: user.email,
         subject: `📚 Your Study Tasks for Today — PlanMyExam`,
