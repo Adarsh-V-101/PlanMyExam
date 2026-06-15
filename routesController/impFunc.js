@@ -76,7 +76,6 @@ async function saveData(dayObjects, email, subject) {
     duration: obj.duration,
   }));
   const userId = await userModel.findOne({ email: email });
-  // const userId = jwt.verify(token, process.env.JWT_SECRET_KEY)
   const newTaskData = await taskModel.create({
     email: email,
     subject: subject,

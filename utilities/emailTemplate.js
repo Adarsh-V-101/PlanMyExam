@@ -1,9 +1,9 @@
 // utils/emailTemplate.js
 const dailyTaskTemplate = (tasks, username) => {
-
   // group tasks by subject for cleaner email layout
   const grouped = tasks.reduce((acc, task) => {
     if (!acc[task.subject]) acc[task.subject] = [];
+    console.log(task.subject) // for debugging
     acc[task.subject].push(task);
     return acc;
   }, {});

@@ -19,7 +19,7 @@ const getDayNumber = (startDate) => {
 };
 
 const startDailyReminder = async () => {
-  // cron.schedule('0 6 * * *', async () => {
+  cron.schedule('0 6 * * *', async () => {
   console.log("⏰ Running daily task reminder...");
 
   try {
@@ -47,6 +47,7 @@ const startDailyReminder = async () => {
           });
         });
       }
+      
       if (todaysTasks.length === 0) {
         console.log(`⚠️  No tasks today for ${user.email}`);
         continue;
@@ -63,10 +64,10 @@ const startDailyReminder = async () => {
     console.error("❌ Cron job failed:", err.message);
   }
 
-  // },
-  //  {
-  //   timezone: "Asia/Kolkata"
-  // });
+  },
+   {
+    timezone: "Asia/Kolkata"
+  });
 };
 
 module.exports = startDailyReminder;
