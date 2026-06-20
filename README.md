@@ -36,7 +36,7 @@ An AI-powered exam study planner that takes your subjects, deadlines, and availa
 ### Prerequisites
 
 - Node.js v18+
-- MongoDB (local or Atlas)
+- MongoDB (Atlas)
 - NVIDIA API key (for Nemotron model)
 - SMTP credentials (for Nodemailer OTP)
 
@@ -55,8 +55,8 @@ PORT=3000
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 NVIDIA_API_KEY=your_nvidia_api_key
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
+EMAIL=your_email@gmail.com
+PASS=your_app_password
 ```
 
 Start the server:
