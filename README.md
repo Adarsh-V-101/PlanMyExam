@@ -89,17 +89,12 @@ The NVIDIA Nemotron reasoning model wraps its output in `<think>...</think>` blo
 
 ## Roadmap
 
-- [ ] Dashboard with progress tracking
-- [ ] Edit/reschedule generated tasks
-- [ ] Mobile-responsive UI polish
-- [ ] Deployed demo
+-  Dashboard with progress tracking
+-  Edit/reschedule generated tasks
+-  Mobile-responsive UI polish
 
 ---
 
 ## Author
 
-<<<<<<< HEAD
-**Adarsh V** — Final-year B.Tech student | [GitHub](https://github.com/Adarsh-V-101)
-=======
 **Adarsh V** — Final-year B.C.A student | [GitHub](https://github.com/Adarsh-V-101)
->>>>>>> 29e3bfc (fix bugs)
