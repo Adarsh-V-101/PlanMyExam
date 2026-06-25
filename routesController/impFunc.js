@@ -60,9 +60,9 @@ FORMAT:
     const parsed = JSON.parse(cleaned.slice(start, end + 1));
     
     await saveData(parsed, userData.email, userData.subjectName);
-
   } catch (err) {
-    console.error("Error during OpenAI completion:", err);
+    generateData(userData)
+    
     throw err;
   }
 }
