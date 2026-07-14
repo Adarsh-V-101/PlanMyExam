@@ -87,14 +87,13 @@ NVIDIA_API_KEY=your_nvidia_api_key
 
 ```
 PlanMyExam/
-├── controllers/       # Route logic (auth, plans, reminders)
-├── middleware/        # JWT auth middleware
-├── models/            # Mongoose schemas (User, Plan)
-├── routes/            # Express route definitions
-├── utils/             # Nodemailer setup, cron jobs
-├── public/            # Frontend (HTML/CSS/JS)
-├── .env.example       # Sample env file
-└── server.js          # Entry point
+
+├── model/             # Mongoose schemas (User, Plan)
+├── routesController/  # Routes + controller logic combined
+├── utilities/         # Nodemailer setup, cron jobs
+├── views/             # EJS templates (server-side rendered)
+├── public/            # Static assets (CSS, client JS)
+└── app.js             # Entry point
 ```
 
 ---
