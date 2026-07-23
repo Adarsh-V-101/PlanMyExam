@@ -22,7 +22,7 @@ routes.get("/dashboard", (req, res) => {
     const userTasks = await taskModel.find({
       userId: new mongoose.Types.ObjectId(decoded.id),
     });
-    res.render("dashboard", { dailyTasks: userTasks, name: "hello" });
+    res.render("dashboard", { dailyTasks: userTasks });
   });
 });
 

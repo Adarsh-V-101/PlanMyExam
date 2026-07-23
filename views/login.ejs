@@ -3,154 +3,144 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Login - Enter Email for OTP</title>
-    <style>
-      body {
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f5f7fb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-      }
-      .card {
-        background: #fff;
-        padding: 24px;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        width: 320px;
-      }
-      label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-      }
-      input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #d7dfe9;
-        border-radius: 4px;
-        margin-bottom: 12px;
-      }
-      button {
-        width: 100%;
-        padding: 10px;
-        background: #2563eb;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .note {
-        font-size: 13px;
-        color: #555;
-        margin-top: 10px;
-        text-align: center;
-      }
-      #otp,
-      #otpLabel {
-        display: none;
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #d7dfe9;
-        border-radius: 4px;
-        margin-bottom: 12px;
-      }
-      #btn2 {
-        display: none;
-      }
-    </style>
+    <title>Sign In — PlanMyExam</title>
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <div class="card">
-      <h2 style="margin: 0 0 12px 0">Sign in with Email</h2>
-      <form id="form" method="post">
-        <label for="name">Name</label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Enter your name"
-          required
-          autofocus
-        />
-        <label for="email">Email address</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="you@example.com"
-          required
-          autofocus
-        />
-        <label id="otpLabel" for="otp">OTP</label>
-        <input
-          id="otp"
-          name="otp"
-          type="text"
-          placeholder="Enter OTP"
-          autofocus
-        />
-        <button type="submit" id="btn1">Send OTP</button>
-        <button type="submit" id="btn2">Verify OTP</button>
-      </form>
-      <div class="note">
-        An OTP (one-time password) will be sent to your email.
+
+    <div class="login-wrap">
+
+      <div class="login-brand">
+        <div class="login-brand__name">
+          <span class="glow-dot"></span>
+          PlanMyExam
+        </div>
+        <p class="login-brand__tagline">AI-powered study planning for exams that matter.</p>
       </div>
+
+      <div class="login-card">
+        <h2>Sign in</h2>
+
+        <form id="form" method="post" class="login-form">
+
+          <div class="form-group">
+            <label for="name">Your name</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              placeholder="e.g. Adarsh"
+              required
+              autofocus
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+
+          <!-- OTP field — hidden until email is sent -->
+          <div class="form-group otp-group" id="otp-group">
+            <label for="otp">One-time password</label>
+            <input
+              id="otp"
+              name="otp"
+              type="text"
+              placeholder="6-digit code"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+            />
+          </div>
+
+          <button type="submit" id="btn1" class="btn btn-primary btn-login">
+            Send OTP →
+          </button>
+          <button type="submit" id="btn2" class="btn btn-primary btn-login" style="display:none;">
+            Verify &amp; Sign In →
+          </button>
+
+        </form>
+
+        <p class="login-note" id="login-note">
+          An OTP will be sent to your email address.
+        </p>
+      </div>
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+      emailjs.init("ewZ5mSAWuSxb24NdM");
+
+      var otp = generateOTP(); // generate once on page load
+
+      const nameInput  = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const emailForm  = document.getElementById("form");
+      const otpInput   = document.getElementById("otp");
+      const otpGroup   = document.getElementById("otp-group");
+      const btn1       = document.getElementById("btn1");
+      const btn2       = document.getElementById("btn2");
+      const note       = document.getElementById("login-note");
+
+      // Step 1 — send OTP
+      emailForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        btn1.textContent = "Sending…";
+        btn1.disabled = true;
+
+        const templateParams = {
+          email: emailInput.value,
+          otp: otp,
+        };
+
+        try {
+          await emailjs.send("service_ndv8amq", "template_qlsb9ij", templateParams);
+          // Lock name + email fields
+          nameInput.setAttribute("readonly", true);
+          emailInput.setAttribute("readonly", true);
+          // Reveal OTP input and switch buttons
+          otpGroup.style.display = "grid";
+          btn1.style.display = "none";
+          btn2.style.display = "flex";
+          // Update note
+          note.textContent = "✓ OTP sent — check your inbox.";
+          note.className = "login-note sent";
+          otpInput.focus();
+        } catch (err) {
+          console.error("Failed to send OTP:", err);
+          btn1.textContent = "Send OTP →";
+          btn1.disabled = false;
+          note.textContent = "Could not send OTP. Please try again.";
+          note.className = "login-note error";
+        }
+      });
+
+      // Step 2 — verify OTP
+      btn2.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (otpInput.value.trim() === otp) {
+          emailForm.setAttribute("action", "/login");
+          emailForm.submit();
+        } else {
+          note.textContent = "Incorrect OTP — check your email and try again.";
+          note.className = "login-note error";
+          otpInput.value = "";
+          otpInput.focus();
+        }
+      });
+
+      // Always produces a 6-digit string (100000–999999)
+      function generateOTP() {
+        return Math.floor(100000 + Math.random() * 900000).toString();
+      }
+    </script>
   </body>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>
-    emailjs.init("ewZ5mSAWuSxb24NdM");
-    var otp = null;
-
-    const emailInput = document.getElementById("email");
-    const emailForm = document.getElementById("form");
-    const otpInput = document.getElementById("otp");
-    const btn1 = document.getElementById("btn1");
-    const btn2 = document.getElementById("btn2");
-
-    otp = generateOTP();
-    emailForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      console.log(emailInput.value);
-      const templateParams = {
-        email: emailInput.value,
-        otp: otp,
-      };
-      try {
-        await emailjs.send(
-          "service_ndv8amq",
-          "template_qlsb9ij",
-          templateParams,
-        );
-        console.log("OTP sent successfully");
-      } catch (err) {
-        console.error("Failed to send OTP:", err);
-        alert("Failed to send OTP. Please try again.");
-      }
-      emailInput.setAttribute("readonly", true);
-      otpInput.style.display = "block";
-      document.getElementById("otpLabel").style.display = "block";
-      btn1.style.display = "none";
-      btn2.style.display = "block";
-    });
-
-    function generateOTP() {
-      const otp = Math.floor(Math.random() * 1000000).toString();
-      return otp;
-    }
-    
-    btn2.addEventListener("click",(e)=>{
-      e.preventDefault();
-      console.log("Generated OTP:", otp);
-      if(otpInput.value == otp){
-        form.setAttribute("action","/login");
-        form.submit();
-      } else {
-        alert("Invalid OTP. Please try again.");
-      }
-    });
-  </script>
 </html>

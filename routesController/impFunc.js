@@ -9,16 +9,15 @@ const openai = new OpenAI({
 });
 
 async function generateData(userData) {
-  console.log("generating data for user:", userData.email); // for debugging
+  // console.log("generating data for user:", userData.email); // for debugging
 
-  const prompt = `Create a day-by-day study roadmap until the given deadline data will be fetched by google app script daily.
+  const prompt = `Create a detailed/topic wise day-by-day study roadmap until the given deadline data ,based on the hours/day provided,
 INPUT:
 Subject: ${userData.subjectName}
 Deadline: ${userData.deadline}
 Goal: ${userData.goal}
 Hours per day: ${userData.hoursPerDay}
 number of days until deadline: ${userData.days}
-email: ${userData.email}
 RULES:
 - Divide topics evenly across days
 - Keep tasks short and actionable
@@ -28,7 +27,7 @@ RULES:
 OUTPUT:
 Return ONLY minified JSON. No markdown, no backticks, no thinking tags.
 FORMAT:
-[{"dayNumber": integer (e.g. 1, 2, 3), "task": "Topic or revision task", "duration": "x hours"}]`;
+[{"dayNumber": integer (e.g. 1, 2, 3), "task": "Topics or revision tasks", "duration": "x hours"}]`;
   try {
     console.log("sending prompt to model..."); // for debugging
     const completion = await openai.chat.completions.create({
@@ -69,12 +68,13 @@ FORMAT:
 
 async function saveData(dayObjects, email, subject) {
   console.log(email, subject);
-
+console.log(dayObjects)
   const task = dayObjects.map((obj) => ({
     dayNumber: obj.dayNumber,
     title: obj.task,
     duration: obj.duration,
   }));
+  console.log(task)
   const userId = await userModel.findOne({ email: email });
   const newTaskData = await taskModel.create({
     email: email,

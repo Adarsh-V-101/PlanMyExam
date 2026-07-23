@@ -3,89 +3,123 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plan My Exam</title>
+    <title>PlanMyExam — Add Subject</title>
     <link rel="stylesheet" href="/css/style.css" />
-    <style>
-      
-    </style>
   </head>
   <body>
-    <div class="dashboard">
-      <a href="/dashboard">Dashboard</a>
-    </div>
-    <div class="container">
-      <h1>Enter Subject and Deadlines</h1>
-      <form id="deadline-form" method="post">
-        <div class="form-group">
-          <label for="subject-name">Subject Name</label>
-          <input
-            type="text"
-            id="subject-name"
-            name="subject-name"
-            placeholder="e.g. Biology"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="exam-goal">Exam / Goal</label>
-          <input
-            type="text"
-            id="exam-goal"
-            name="exam-goal"
-            placeholder="e.g. Final exam, quiz, certification"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="hours-per-day">Hours Per Day</label>
-          <input
-            type="number"
-            id="hours-per-day"
-            name="hours-per-day"
-            min="0"
-            step="0.5"
-            placeholder="e.g. 2"
-            required
-          />
-        </div>
-         
-        <div class="form-group">
-          <label for="deadline-description">Deadline Description</label>
-          <textarea
-            id="deadline-description"
-            name="deadline-description"
-            placeholder="e.g. Final exam project, assignment submission"
-            required
-          ></textarea>
-        </div>
-        <div class="form-group">
-          <label for="deadline-date">Deadline Date</label>
-          <input type="date" id="deadline-date" name="deadline-date" required />
-        </div>
-        <button type="submit">Save Deadline</button>
-      </form>
-      <div
-        class="container"
-        id="deadline-list-container"
-        style="margin-top: 20px"
-      >
-        <h2>Saved Deadlines</h2>
-        <ul
-          id="deadline-list"
-          style="list-style: none; padding: 0; margin: 0"
-        ></ul>
-      </div>
-    </div>
 
+    <nav class="nav">
+      <div class="nav__brand">
+        <span class="glow-dot"></span>
+        PlanMyExam
+      </div>
+      <div class="nav__actions">
+        <a href="/dashboard" class="btn btn-ghost">Dashboard →</a>
+      </div>
+    </nav>
+
+    <main class="page">
+      <div class="page-header">
+        <h1>Add a subject</h1>
+        <p>Fill in the details — your AI study plan will be ready on the dashboard.</p>
+      </div>
+
+      <div class="card">
+        <p class="card-eyebrow">Subject Details</p>
+        <form id="deadline-form" method="post" class="form">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="subject-name">Subject</label>
+              <input
+                type="text"
+                id="subject-name"
+                name="subject-name"
+                placeholder="e.g. Biology"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="exam-goal">Exam / Goal</label>
+              <input
+                type="text"
+                id="exam-goal"
+                name="exam-goal"
+                placeholder="e.g. Final exam, quiz, certification"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hours-per-day">Hours per day</label>
+              <input
+                type="number"
+                id="hours-per-day"
+                name="hours-per-day"
+                min="0.5"
+                max="24"
+                step="0.5"
+                placeholder="e.g. 2"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="deadline-date">Deadline</label>
+              <input type="date" id="deadline-date" name="deadline-date" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="deadline-description">What to cover</label>
+            <textarea
+              id="deadline-description"
+              name="deadline-description"
+              placeholder="e.g. Chapters 1–6, past papers, formula sheets, essay practice…"
+              required
+            ></textarea>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary btn-submit">
+              Generate Study Plan →
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Saved subjects list — populated by server or JS -->
+      <div class="card" id="deadline-list-container">
+        <p class="card-eyebrow">Saved Subjects</p>
+        <div id="deadline-list" class="deadline-grid">
+          <!-- JS or EJS injects .deadline-item elements here -->
+        </div>
+        <div class="empty-state" id="empty-state">
+          <div class="empty-state__icon">📚</div>
+          <p class="empty-state__text">No subjects saved yet. Add one above.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Loading overlay -->
     <div class="loading-popup" id="loading-popup">
       <div class="loading-popup__content">
         <div class="loading-popup__spinner"></div>
-        <p class="loading-popup__message">Saving deadline, please wait...</p>
+        <p class="loading-popup__message">Building your study plan…</p>
       </div>
     </div>
 
-    <div class="popup" id="popup"></div>
-    
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+      <svg class="toast__icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="9" cy="9" r="8" stroke="#6366f1" stroke-width="1.5"/>
+        <path d="M5.5 9.5L7.5 11.5L12.5 6.5" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <p class="toast__text" id="toast-text"></p>
+    </div>
+
     <script src="/js/script.js"></script>
   </body>
 </html>

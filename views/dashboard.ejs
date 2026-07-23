@@ -1,151 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Time Table</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #1f2a37;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — PlanMyExam</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
 
-    .container {
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 24px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    p {
-      margin: 8px 0 0;
-      color: #4b5563;
-      line-height: 1.6;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 20px;
-      background: #2563eb;
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .card {
-      background: #f8fafc;
-      border-radius: 16px;
-      padding: 22px;
-      margin-bottom: 22px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .card h2 {
-      margin-top: 0;
-      margin-bottom: 16px;
-      font-size: 1.3rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    th,
-    td {
-      padding: 14px 16px;
-      text-align: left;
-    }
-
-    th {
-      background: #eef2ff;
-      color: #1f2937;
-      font-weight: 700;
-    }
-
-    tr:not(:last-child) td {
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .status {
-      font-weight: 700;
-    }
-
-    .status.confirmed {
-      color: #16a34a;
-    }
-
-    .status.pending {
-      color: #d97706;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div>
-        <h1>Student Dashboard</h1>
-        <p>Check your current timetable and stay on track with upcoming classes.</p>
+    <nav class="nav">
+      <div class="nav__brand">
+        <span class="glow-dot"></span>
+        PlanMyExam
       </div>
-      <a class="button" style="background-color: #30a130;" href="/home">Home</a>
-      <a class="button" href="/dashboard">Refresh</a>
-    </header>
-    <h1>Current goals</h1>
-    
-    <div class="card">
-      <h2>Today's Timetable</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Subject</th>
-            <th>Title</th>
-            <th>Day</th>
-            <th>duration</th>
-          </tr>
-        </thead>
-        <tbody>
-            <!-- <p> Subject : <%= dailyTasks %> </p> -->
-          
-          <% for(let i in dailyTasks){ %>
-            <%  let task = dailyTasks[i]; %> 
-          <tr>
-            <td><%= task.subject %></td>
-            <td><%= task.tasks[i].title %></td>
-            <td class="status confirmed"><%= task.tasks[i].dayNumber %></td>
-            <td class="status confirmed"><%= task.tasks[i].duration %></td>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
-    </div>
+      <div class="nav__actions">
+        <a href="/home" class="btn btn-outline-success">+ Add Subject</a>
+        <a href="/dashboard" class="btn btn-ghost">Refresh</a>
+      </div>
+    </nav>
 
-    <div class="card">
-      <h2>Weekly Overview</h2>
-      <p>View your full weekly schedule and prepare for each class. Use this dashboard to track changes and stay organized.</p>
-    </div>
-  </div>
-</body>
+    <main class="page">
+
+      <div class="page-header">
+        <h1 id="greeting">Your Study Plan</h1>
+        <p>Here's what you should be working on today.</p>
+      </div>
+
+       <div class="flex ">
+
+      <div class="card">
+        <% if (!dailyTasks || dailyTasks.length === 0) { %>
+          <div class="empty-state">
+            <div class="empty-state__icon">📭</div>
+            <p class="empty-state__text">No subject yet — add a subject and generate your plan.</p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <p class="card-eyebrow">Subjects</p>
+            <%  for(let i=0;i<dailyTasks.length ;i++){ %>
+              
+              <%= dailyTasks[i].subject %> 
+          <%  } %>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Weekly overview (placeholder until implemented) -->
+      <div class="card">
+        <p class="card-eyebrow">Weekly Overview</p>
+        <div class="empty-state">
+          
+        </div>
+      </div>
+       </div>
+
+    </main>
+
+    <script>
+      // Dynamic greeting based on time of day
+      const h = new Date().getHours();
+      const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+      document.getElementById("greeting").textContent = greeting + ". Here's your plan.";
+    </script>
+
+  </body>
 </html>
