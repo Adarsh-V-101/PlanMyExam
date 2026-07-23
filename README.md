@@ -1,100 +1,144 @@
-# PlanMyExam 📚
 
-An AI-powered exam study planner that takes your subjects, deadlines, and available hours — and generates a personalized day-by-day study schedule using a reasoning LLM, streamed in real time.
+# 📚 PlanMyExam
 
-> 🚧 Work in progress — core features are functional, final polish in progress.
+**AI-powered exam study planner — generates personalized study schedules using NVIDIA Nemotron**
 
----
-
-## Features
-
-- **AI Schedule Generation** — Powered by NVIDIA Nemotron (reasoning model via OpenAI-compatible API), generates structured study plans tailored to your exam timeline
-- **Real-time Streaming** — Schedule streams to the UI via Server-Sent Events (SSE) as the AI reasons through your plan
-- **JWT Authentication** — Secure login/signup with JSON Web Tokens
-- **OTP Email Verification** — Email-based OTP flow using Nodemailer
-- **Task Management** — Save, view, and track your generated study tasks in MongoDB
-- **Scheduled Reminders** — node-cron handles time-based study reminders
 
 ---
 
-## Tech Stack
+## 🧩 What is this?
 
-| Layer | Tech |
-|---|---|
-| Backend | Node.js, Express 5 |
-| Database | MongoDB, Mongoose |
-| Auth | JWT, OTP via Nodemailer |
-| AI | NVIDIA Nemotron (OpenAI-compatible client) |
-| Real-time | Server-Sent Events (SSE) |
-| Templating | EJS |
+PlanMyExam lets students input their subjects, exam dates, and available study hours — and instantly generates a day-by-day AI study plan tailored to their schedule. The app handles async AI generation via polling, sends daily revision reminders over email, and keeps everything tied to a secure JWT + OTP auth system.
+
+---
+
+## ✨ Features
+
+- 🤖 **AI Study Plan Generation** — Uses the NVIDIA Nemotron API to create personalized multi-day study schedules
+- ⏳ **Async Polling Architecture** — AI generation runs in the background; frontend polls for the result (no SSE, no blocking)
+- 🔐 **OTP-Based Authentication** — Email OTP verification on signup/login via Nodemailer
+- 📅 **Daily Email Reminders** — Automated daily study reminders using `node-cron` + Nodemailer
+- 🔒 **Security Hardened** — Fixed IDOR vulnerability (users can only access their own plans) and patched OTP bypass
+- 🎨 **Clean Dark UI** — Dark indigo/violet theme with glassmorphic nav and toast notifications
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Runtime | Node.js |
+| Framework | Express.js |
+| Database | MongoDB + Mongoose |
+| Auth | JWT + OTP (Nodemailer) |
+| AI | NVIDIA Nemotron API |
 | Scheduling | node-cron |
+| Email | Nodemailer |
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js v18+
-- MongoDB (Atlas)
-- NVIDIA API key (for Nemotron model)
-- SMTP credentials (for Nodemailer OTP)
+- MongoDB (local or Atlas)
+- NVIDIA API key ([get one here](https://build.nvidia.com))
+- A Gmail account (for Nodemailer — enable App Passwords)
 
 ### Installation
 
 ```bash
+# 1. Clone the repo
 git clone https://github.com/Adarsh-V-101/PlanMyExam.git
 cd PlanMyExam
+
+# 2. Install dependencies
 npm install
+
+# 3. Set up environment variables (see below)
+cp .env.example .env
+
+# 4. Start the server
+npm start
 ```
 
-Create a `.env` file in the root:
+### Environment Variables
+
+Create a `.env` file in the root with the following:
 
 ```env
 PORT=3000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+
+JWT_SECRET=your_jwt_secret_key
+
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASS=your_gmail_app_password
+
 NVIDIA_API_KEY=your_nvidia_api_key
-EMAIL=your_email@gmail.com
-PASS=your_app_password
 ```
 
-Start the server:
-
-```bash
-npm run dev
-```
+> ⚠️ Never commit your `.env` file. It's in `.gitignore`.
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 PlanMyExam/
-├── model/              # Mongoose schemas (User, Task)
-├── routesController/   # Express routes + controllers
-├── utilities/          # Helpers (JWT, mailer, AI client)
-├── views/              # EJS templates
-├── public/             # Static assets (CSS, JS)
-└── app.js              # Entry point
+
+├── model/             # Mongoose schemas (User, Plan)
+├── routesController/  # Routes + controller logic combined
+├── utilities/         # Nodemailer setup, cron jobs
+├── views/             # EJS templates (server-side rendered)
+├── public/            # Static assets (CSS, client JS)
+└── app.js             # Entry point
 ```
 
 ---
 
-## Known Challenges
+## 🔌 API Overview
 
-The NVIDIA Nemotron reasoning model wraps its output in `<think>...</think>` blocks before producing the actual JSON. Stripping these cleanly while maintaining SSE stream integrity was the trickiest part of this project.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register with OTP verification |
+| POST | `/api/auth/verify-otp` | Verify OTP and get JWT |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/plans/generate` | Trigger AI plan generation |
+| GET | `/api/plans/status/:jobId` | Poll generation status |
+| GET | `/api/plans/my-plans` | Get all plans for logged-in user |
 
 ---
 
-## Roadmap
+## 🔐 Security Notes
 
--  Dashboard with progress tracking
--  Edit/reschedule generated tasks
--  Mobile-responsive UI polish
+- All plan routes are protected with JWT middleware
+- IDOR patch: users can only read/write their own plans — no ID guessing
+- OTP is single-use and expires after 10 minutes
 
 ---
 
-## Author
+## 🧠 How Async Generation Works
 
-**Adarsh V** — Final-year B.C.A student | [GitHub](https://github.com/Adarsh-V-101)
+```
+User submits form
+      │
+      ▼
+Server queues job → returns jobId immediately
+      │
+      ▼
+NVIDIA Nemotron API processes in background
+      │
+      ▼
+Frontend polls GET /api/plans/status/:jobId every 3s
+      │
+      ▼
+On completion → plan saved to MongoDB → returned to user
+```
+
+---
+
+## 📬 Contact
+
+Made by [Adarsh Vishwakarma](https://github.com/Adarsh-V-101)
