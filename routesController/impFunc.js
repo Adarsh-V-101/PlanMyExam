@@ -27,7 +27,7 @@ RULES:
 OUTPUT:
 Return ONLY minified JSON. No markdown, no backticks, no thinking tags.
 FORMAT:
-[{"dayNumber": integer (e.g. 1, 2, 3), "task": "Topics or revision tasks", "duration": "x hours"}]`;
+[{"dayNumber": integer (e.g. 1, 2, 3), "title": "Topics or revision tasks", "duration": "x hours"}]`;
   try {
     console.log("sending prompt to model..."); // for debugging
     const completion = await openai.chat.completions.create({
@@ -57,30 +57,32 @@ FORMAT:
       throw new Error("No JSON array found in model response");
     }
     const parsed = JSON.parse(cleaned.slice(start, end + 1));
-    
-    await saveData(parsed, userData.email, userData.subjectName);
+    const taskData = {
+      tasks : parsed,
+      email:userData.email,
+      subject:userData.subjectName,
+      goal: userData.goal,
+      examDate : userData.examDate
+    }
+    await saveData(taskData);
   } catch (err) {
+    console.log('error in generating output: ',err)
     generateData(userData)
     
     throw err;
   }
 }
 
-async function saveData(dayObjects, email, subject) {
-  console.log(email, subject);
-console.log(dayObjects)
-  const task = dayObjects.map((obj) => ({
-    dayNumber: obj.dayNumber,
-    title: obj.task,
-    duration: obj.duration,
-  }));
-  console.log(task)
-  const userId = await userModel.findOne({ email: email });
+async function saveData(taskData) {
+  console.log(taskData)
+  const userId = await userModel.findOne({ email: taskData.email });
   const newTaskData = await taskModel.create({
-    email: email,
-    subject: subject,
+    email: taskData.email,
+    subject: taskData.subject,
+    goal:taskData.goal,
     startDate: new Date(),
-    tasks: task,
+    examDate:taskData.examDate,
+    tasks: taskData.tasks,
     userId: userId._id,
   });
   userId.taskId.push(newTaskData._id);

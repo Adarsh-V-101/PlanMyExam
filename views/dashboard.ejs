@@ -1,67 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard — PlanMyExam</title>
-    <link rel="stylesheet" href="/css/style.css" />
-  </head>
-  <body>
 
-    <nav class="nav">
-      <div class="nav__brand">
-        <span class="glow-dot"></span>
-        PlanMyExam
-      </div>
-      <div class="nav__actions">
-        <a href="/home" class="btn btn-outline-success">+ Add Subject</a>
-        <a href="/dashboard" class="btn btn-ghost">Refresh</a>
-      </div>
-    </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — PlanMyExam</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
 
-    <main class="page">
+<body>
 
-      <div class="page-header">
-        <h1 id="greeting">Your Study Plan</h1>
-        <p>Here's what you should be working on today.</p>
-      </div>
+  <nav class="nav">
+    <div class="nav__brand">
+      <span class="glow-dot"></span>
+      PlanMyExam
+    </div>
+    <div class="nav__actions">
+      <a href="/home" class="btn btn-outline-success">+ Add Subject</a>
+      <a href="/dashboard" class="btn btn-ghost">Refresh</a>
+    </div>
+  </nav>
 
-       <div class="flex ">
+  <main class="page">
+
+    <div class="page-header">
+      <h1 id="greeting">Your Study Plan</h1>
+      <p>Here's what you should be working on today.</p>
+    </div>
+
+    <div class="flex ">
 
       <div class="card">
-        <% if (!dailyTasks || dailyTasks.length === 0) { %>
+        <% if (!dailyTasks || dailyTasks.length===0) { %>
           <div class="empty-state">
             <div class="empty-state__icon">📭</div>
             <p class="empty-state__text">No subject yet — add a subject and generate your plan.</p>
           </div>
-        <% } else { %>
-          <div class="table-wrap">
-            <p class="card-eyebrow">Subjects</p>
-            <%  for(let i=0;i<dailyTasks.length ;i++){ %>
-              
-              <%= dailyTasks[i].subject %> 
-          <%  } %>
-          </div>
-        <% } %>
+          <% } else { %>
+            <div class="table-wrap">
+              <p class="card-eyebrow">Subjects</p>
+              <% for(let i=0;i<dailyTasks.length ;i++){ %>
+
+                <%= dailyTasks[i].subject %> <br>
+                  <% } %>
+            </div>
+            <% } %>
       </div>
 
       <!-- Weekly overview (placeholder until implemented) -->
       <div class="card">
-        <p class="card-eyebrow">Weekly Overview</p>
-        <div class="empty-state">
-          
-        </div>
+        <p class="card-eyebrow">Upcoming Goals</p>
+          <% for(let i=0;i<dailyTasks.length ;i++){ %>
+
+            <%= dailyTasks[i].goal %> <br>
+              <% } %>
+
       </div>
-       </div>
+    </div>
 
-    </main>
+  
 
-    <script>
-      // Dynamic greeting based on time of day
-      const h = new Date().getHours();
-      const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-      document.getElementById("greeting").textContent = greeting + ". Here's your plan.";
-    </script>
+  </main>
 
-  </body>
+  <script>
+    // Dynamic greeting based on time of day
+    const h = new Date().getHours();
+    const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+    document.getElementById("greeting").textContent = greeting + ". Here's your plan.";
+  </script>
+
+</body>
+
 </html>

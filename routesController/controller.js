@@ -59,6 +59,7 @@ routes.post("/userData", async (req, res) => {
     goal: req.body["exam-goal"],
     hoursPerDay: req.body["hours-per-day"],
     email: decoded.email,
+    examDate:date1,
     days: Math.floor(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24)),
   };
   res.redirect("/home"); // respond immediately
