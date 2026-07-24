@@ -602,9 +602,3 @@ tr:hover td { background: rgba(99, 102, 241, 0.04); }
   .card { padding: 20px; }
   .toast { bottom: 16px; right: 16px; left: 16px; max-width: none; }
 }
-
-.flex{
-  display: flex;
-  justify-content: space-between;
-  margin: 4px;
-}

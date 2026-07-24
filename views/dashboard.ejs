@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — PlanMyExam</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/output.css">
 </head>
 
 <body>
@@ -28,7 +29,7 @@
       <p>Here's what you should be working on today.</p>
     </div>
 
-    <div class="flex ">
+    <div class="flex justify-between m-5">
 
       <div class="card">
         <% if (!dailyTasks || dailyTasks.length===0) { %>
@@ -50,16 +51,26 @@
       <!-- Weekly overview (placeholder until implemented) -->
       <div class="card">
         <p class="card-eyebrow">Upcoming Goals</p>
-          <% for(let i=0;i<dailyTasks.length ;i++){ %>
+        <% for(let i=0;i<dailyTasks.length ;i++){ %>
 
-            <%= dailyTasks[i].goal %> <br>
-              <% } %>
+          <%= dailyTasks[i].goal %> <br>
+            <% } %>
 
       </div>
     </div>
+    <% const months=['jan','feb','mar','apr','jun','july','aug'] %>
+      <% const date=new Date %>
+        <div class="bg-gray-600 w-full border border-r-blue-600">
+          <div class="flex justify-center my-5 items-center">
+            <h1 class="font-bold p-4 bg-amber-600">
+              <%= months[date.getMonth()-1] %>
+            </h1>
+            <h1 class="font-bold bg-amber-950">
+              <%= date.getFullYear() %>
+            </h1>
+          </div>
 
-  
-
+        </div>
   </main>
 
   <script>
