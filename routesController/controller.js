@@ -66,7 +66,7 @@ routes.post("/userData", async (req, res) => {
 
   await generateData(userData).catch((err) => {
     console.error("Background AI generation failed:", err.message);
-  });
+  }); 
 });
 
 routes.get('/test', async (req, res) => {

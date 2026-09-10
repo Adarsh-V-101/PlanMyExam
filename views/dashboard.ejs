@@ -28,7 +28,14 @@
       <h1 id="greeting">Your Study Plan</h1>
       <p>Here's what you should be working on today.</p>
     </div>
-
+<div>
+        <% const date=new Date %>
+      <h1 class="font-bold text-3xl">
+        <%= date.getDate() %> /
+        <%= date.getMonth() %> /
+        <%= date.getFullYear() %>
+      </h1>
+    </div>
     <div class="flex justify-between m-5">
 
       <div class="card">
@@ -41,14 +48,17 @@
             <div class="table-wrap">
               <p class="card-eyebrow">Subjects</p>
               <% for(let i=0;i<dailyTasks.length ;i++){ %>
-
                 <%= dailyTasks[i].subject %> <br>
+                <% for(let j=0;j<dailyTasks[i].tasks.length;j++){ %>
+                <div class="border p-6">
+                    <%= dailyTasks[i].tasks[j] %> <br>
+                  </div>
+                  <% } %>
                   <% } %>
             </div>
             <% } %>
       </div>
 
-      <!-- Weekly overview (placeholder until implemented) -->
       <div class="card">
         <p class="card-eyebrow">Upcoming Goals</p>
         <% for(let i=0;i<dailyTasks.length ;i++){ %>
@@ -58,19 +68,8 @@
 
       </div>
     </div>
-    <% const months=['jan','feb','mar','apr','jun','july','aug'] %>
-      <% const date=new Date %>
-        <div class="bg-gray-600 w-full border border-r-blue-600">
-          <div class="flex justify-center my-5 items-center">
-            <h1 class="font-bold p-4 bg-amber-600">
-              <%= months[date.getMonth()-1] %>
-            </h1>
-            <h1 class="font-bold bg-amber-950">
-              <%= date.getFullYear() %>
-            </h1>
-          </div>
-
-        </div>
+    
+        
   </main>
 
   <script>

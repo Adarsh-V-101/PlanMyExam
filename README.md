@@ -68,18 +68,16 @@ npm start
 Create a `.env` file in the root with the following:
 
 ```env
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
+PORT= 3000
+MONGO_URI= your_mongodb_connection_string
 
-JWT_SECRET=your_jwt_secret_key
+JWT_SECRET= your_jwt_secret_key
 
-EMAIL_USER=your_gmail@gmail.com
-EMAIL_PASS=your_gmail_app_password
+EMAIL_USER= your_gmail@gmail.com
+EMAIL_PASS= your_gmail_app_password
 
-NVIDIA_API_KEY=your_nvidia_api_key
+NVIDIA_API_KEY= your_nvidia_api_key
 ```
-
-> ⚠️ Never commit your `.env` file. It's in `.gitignore`.
 
 ---
 
@@ -95,19 +93,6 @@ PlanMyExam/
 ├── public/            # Static assets (CSS, client JS)
 └── app.js             # Entry point
 ```
-
----
-
-## 🔌 API Overview
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register with OTP verification |
-| POST | `/api/auth/verify-otp` | Verify OTP and get JWT |
-| POST | `/api/auth/login` | Login |
-| POST | `/api/plans/generate` | Trigger AI plan generation |
-| GET | `/api/plans/status/:jobId` | Poll generation status |
-| GET | `/api/plans/my-plans` | Get all plans for logged-in user |
 
 ---
 
