@@ -4,9 +4,8 @@ const userModel = require("../model/userModel");
 const jwt = require("jsonwebtoken");
 const { generateData } = require("./impFunc");
 const mongoose = require("mongoose");
-const runDailyReminder = require("../utilities/cron");
+const {runDailyReminder, theMail} = require("../utilities/cron");
 const sendMail = require("../utilities/mailer");
-const dailyTaskTemplate = require("../utilities/emailTemplate")
 
 
 routes.get("/", (req, res) => {
@@ -102,23 +101,9 @@ routes.get("/test", async (req, res) => {
 
 routes.post("/test-email", async (req, res) => {
   try {
-    jwt.verify(
-    req.cookies.token,
-    process.env.JWT_SECRET_KEY,
-    async (err, decoded) => {
-      if (err) {
-        return res.redirect("/");
-      }
-      const userTasks = await taskModel.find({
-        userId: new mongoose.Types.ObjectId(decoded.id),
-      });
-    await sendMail({
-        to: user.email,
-        subject: `📚 Your Study Tasks for Today — PlanMyExam`,
-        html: dailyTaskTemplate(todaysTasks, user.username),
-      });
+    
+    theMail();
     res.redirect("/dashboard");
-  })
  } catch (err) {
     console.error("Test email failed:", err.message);
     res.status(500).send("Unable to send test email.");

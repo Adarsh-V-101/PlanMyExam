@@ -18,8 +18,7 @@ const getDayNumber = (startDate) => {
   return diffDays + 1; // Day 1 = startDate itself
 };
 
-const startDailyReminder = async () => {
-  cron.schedule('0 6 * * *', async () => {
+const theMail = async()=>{
   console.log("⏰ Running daily task reminder...");
 
   try {
@@ -63,10 +62,13 @@ const startDailyReminder = async () => {
     console.error("❌ Cron job failed:", err.message);
   }
 
-  },
-   {
-    timezone: "Asia/Kolkata"
+}
+
+const startDailyReminder = () => {
+  cron.schedule('0 6 * * *', theMail, {
+    timezone: "Asia/Kolkata",
   });
 };
 
-module.exports = startDailyReminder;
+
+module.exports = {startDailyReminder, theMail};

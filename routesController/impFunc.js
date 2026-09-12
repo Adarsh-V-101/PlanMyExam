@@ -90,6 +90,5 @@ async function saveData(taskData) {
 }
 
 module.exports = {
-  generateData,
-  saveData,
+  generateData
 };
