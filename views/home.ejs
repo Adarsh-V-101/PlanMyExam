@@ -93,13 +93,19 @@
       <!-- Saved subjects list — populated by server or JS -->
       <div class="card" id="deadline-list-container">
         <p class="card-eyebrow">Saved Subjects</p>
-        <div id="deadline-list" class="deadline-grid">
-          <!-- JS or EJS injects .deadline-item elements here -->
-        </div>
-        <div class="empty-state" id="empty-state">
-          <div class="empty-state__icon">📚</div>
-          <p class="empty-state__text">No subjects saved yet. Add one above.</p>
-        </div>
+        <% if(!dailyTasks || dailyTasks.length === 0){ %>
+          <div class="empty-state" id="empty-state">
+            <div class="empty-state__icon">📚</div>
+            <p class="empty-state__text">No subjects saved yet. Add one above.</p>
+          </div>
+       <% } else{ %>
+          <% for (let j = 0; j < dailyTasks.length; j++) { %>
+                <div class="task-row">
+                  <span class="task-row__dot"></span>
+                  <span><%= dailyTasks[j].subject %></span>
+                </div>
+              <% } %>
+       <% } %>
       </div>
     </main>
 

@@ -2,28 +2,47 @@ const routes = require("express").Router();
 const taskModel = require("../model/tasksModel");
 const userModel = require("../model/userModel");
 const jwt = require("jsonwebtoken");
-const { generateData, saveData } = require("./impFunc");
+const { generateData } = require("./impFunc");
 const mongoose = require("mongoose");
-const runDailyReminder = require('../utilities/cron');
+const runDailyReminder = require("../utilities/cron");
+const sendMail = require("../utilities/mailer");
+const dailyTaskTemplate = require("../utilities/emailTemplate")
+
 
 routes.get("/", (req, res) => {
   res.render("login");
 });
 
 routes.get("/home", (req, res) => {
-  res.render("home");
+  jwt.verify(
+    req.cookies.token,
+    process.env.JWT_SECRET_KEY,
+    async (err, decoded) => {
+      if (err) {
+        return res.redirect("/");
+      }
+      const userTasks = await taskModel.find({
+        userId: new mongoose.Types.ObjectId(decoded.id),
+      });
+      res.render("home", { dailyTasks: userTasks });
+    },
+  );
 });
 
 routes.get("/dashboard", (req, res) => {
-  jwt.verify(req.cookies.token, process.env.JWT_SECRET_KEY, async (err, decoded) => {
-    if (err) {
-      return res.redirect("/");
-    }
-    const userTasks = await taskModel.find({
-      userId: new mongoose.Types.ObjectId(decoded.id),
-    });
-    res.render("dashboard", { dailyTasks: userTasks });
-  });
+  jwt.verify(
+    req.cookies.token,
+    process.env.JWT_SECRET_KEY,
+    async (err, decoded) => {
+      if (err) {
+        return res.redirect("/");
+      }
+      const userTasks = await taskModel.find({
+        userId: new mongoose.Types.ObjectId(decoded.id),
+      });
+      res.render("dashboard", { dailyTasks: userTasks });
+    },
+  );
 });
 
 routes.post("/login", async (req, res) => {
@@ -41,7 +60,10 @@ routes.post("/login", async (req, res) => {
       username: requesteduser.name,
       email: requesteduser.email,
     });
-    const token = jwt.sign({ email: user.email, id: user._id }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign(
+      { email: user.email, id: user._id },
+      process.env.JWT_SECRET_KEY,
+    );
     res.cookie("token", token);
     res.redirect("/home");
   }
@@ -59,22 +81,48 @@ routes.post("/userData", async (req, res) => {
     goal: req.body["exam-goal"],
     hoursPerDay: req.body["hours-per-day"],
     email: decoded.email,
-    examDate:date1,
+    examDate: date1,
     days: Math.floor(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24)),
   };
   res.redirect("/home"); // respond immediately
 
   await generateData(userData).catch((err) => {
     console.error("Background AI generation failed:", err.message);
-  }); 
+  });
 });
 
-routes.get('/test', async (req, res) => {
+routes.get("/test", async (req, res) => {
   try {
     await runDailyReminder();
-    res.json({ success: true, message: 'Reminder emails sent!' });
+    res.json({ success: true, message: "Reminder emails sent!" });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
+
+routes.post("/test-email", async (req, res) => {
+  try {
+    jwt.verify(
+    req.cookies.token,
+    process.env.JWT_SECRET_KEY,
+    async (err, decoded) => {
+      if (err) {
+        return res.redirect("/");
+      }
+      const userTasks = await taskModel.find({
+        userId: new mongoose.Types.ObjectId(decoded.id),
+      });
+    await sendMail({
+        to: user.email,
+        subject: `📚 Your Study Tasks for Today — PlanMyExam`,
+        html: dailyTaskTemplate(todaysTasks, user.username),
+      });
+    res.redirect("/dashboard");
+  })
+ } catch (err) {
+    console.error("Test email failed:", err.message);
+    res.status(500).send("Unable to send test email.");
+  }
+});
+
 module.exports = routes;

@@ -7,9 +7,196 @@
   <title>Dashboard — PlanMyExam</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/output.css">
+
+  <style>
+    /* Page-scoped styles for the dashboard view.
+       Kept local (not in style.css) since I can't see your existing
+       class names — merge these into your stylesheet if you'd rather
+       not have an inline <style> block long-term. */
+
+    .dash {
+      --bg: #0d0b1a;
+      --surface: rgba(139, 92, 246, 0.06);
+      --surface-strong: rgba(139, 92, 246, 0.12);
+      --border: rgba(139, 92, 246, 0.18);
+      --accent: #8b5cf6;
+      --accent-2: #6366f1;
+      --text: #ece9f7;
+      --text-muted: #948dae;
+      --radius: 14px;
+    }
+
+    .dash-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .dash-header h1 {
+      font-size: 1.9rem;
+      font-weight: 650;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+
+    .dash-header p {
+      color: var(--text-muted);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .date-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+    }
+
+    .date-pill__weekday {
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .date-pill__full {
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 880px) {
+      .dash-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(10px);
+      padding: 22px;
+    }
+
+    .panel + .panel {
+      margin-top: 16px;
+    }
+
+    .panel__eyebrow {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 0 0 14px;
+    }
+
+    .subject-block {
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+    }
+
+    .subject-block + .subject-block {
+      margin-top: 14px;
+    }
+
+    .subject-block__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .subject-block__name {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .subject-block__count {
+      font-size: 0.72rem;
+      color: var(--accent);
+      background: rgba(139, 92, 246, 0.15);
+      border-radius: 999px;
+      padding: 2px 10px;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 2px;
+      border-top: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .task-row:first-of-type {
+      border-top: none;
+    }
+
+    .task-row__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      flex-shrink: 0;
+    }
+
+    .goal-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .goal-item:first-of-type {
+      border-top: none;
+    }
+
+    .goal-item__subject {
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .goal-item__text {
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .empty-state__icon {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .empty-state__text {
+      color: var(--text-muted);
+      margin: 0 0 16px;
+    }
+  </style>
 </head>
 
-<body>
+<body class="dash">
 
   <nav class="nav">
     <div class="nav__brand">
@@ -18,66 +205,81 @@
     </div>
     <div class="nav__actions">
       <a href="/home" class="btn btn-outline-success">+ Add Subject</a>
+      <form action="/test-email" method="post">
+        <button type="submit" class="btn btn-ghost">Test Email</button>
+      </form>
       <a href="/dashboard" class="btn btn-ghost">Refresh</a>
     </div>
   </nav>
 
   <main class="page">
 
-    <div class="page-header">
-      <h1 id="greeting">Your Study Plan</h1>
-      <p>Here's what you should be working on today.</p>
-    </div>
-<div>
-        <% const date=new Date %>
-      <h1 class="font-bold text-3xl">
-        <%= date.getDate() %> /
-        <%= date.getMonth() %> /
-        <%= date.getFullYear() %>
-      </h1>
-    </div>
-    <div class="flex justify-between m-5">
+    <%
+      const date = new Date();
+      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const h = date.getHours();
+      const greeting = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+    %>
 
-      <div class="card">
-        <% if (!dailyTasks || dailyTasks.length===0) { %>
-          <div class="empty-state">
-            <div class="empty-state__icon">📭</div>
-            <p class="empty-state__text">No subject yet — add a subject and generate your plan.</p>
-          </div>
-          <% } else { %>
-            <div class="table-wrap">
-              <p class="card-eyebrow">Subjects</p>
-              <% for(let i=0;i<dailyTasks.length ;i++){ %>
-                <%= dailyTasks[i].subject %> <br>
-                <% for(let j=0;j<dailyTasks[i].tasks.length;j++){ %>
-                <div class="border p-6">
-                    <%= dailyTasks[i].tasks[j] %> <br>
-                  </div>
-                  <% } %>
-                  <% } %>
+    <div class="dash-header">
+      <div>
+        <h1><%= greeting %>. Here's your plan.</h1>
+        <p>Here's what you should be working on today.</p>
+      </div>
+      <div class="date-pill">
+        <span class="date-pill__weekday"><%= weekdays[date.getDay()] %></span>
+        <span class="date-pill__full"><%= months[date.getMonth()] %> <%= date.getDate() %>, <%= date.getFullYear() %></span>
+      </div>
+    </div>
+
+    <% if (!dailyTasks || dailyTasks.length === 0) { %>
+      <div class="panel empty-state">
+        <div class="empty-state__icon">📭</div>
+        <p class="empty-state__text">No subjects yet. Add one to generate your first study plan.</p>
+        <a href="/home" class="btn btn-outline-success">+ Add Subject</a>
+      </div>
+    <% } else { %>
+      <div class="dash-grid">
+
+        <div class="panel">
+          <p class="panel__eyebrow">Today's tasks</p>
+          <% for (let i = 0; i < dailyTasks.length; i++) { %>
+            <div class="subject-block">
+              <div class="subject-block__head">
+                <span class="subject-block__name"><%= dailyTasks[i].subject %></span>
+                <span class="subject-block__count"><%= dailyTasks[i].tasks.length %> task<%= dailyTasks[i].tasks.length === 1 ? '' : 's' %></span>
+              </div>
+              <% for (let j = 0; j < dailyTasks[i].tasks.length; j++) { %>
+                <div class="task-row">
+                  <span class="task-row__dot"></span>
+                  <span><%= dailyTasks[i].tasks[j].title %></span>
+                </div>
+              <% } %>
             </div>
+          <% } %>
+        </div>
+
+        <div class="panel">
+          <p class="panel__eyebrow">Upcoming goals</p>
+          <%
+            const seenGoals = new Set();
+          %>
+          <% for (let i = 0; i < dailyTasks.length; i++) { %>
+            <% if (dailyTasks[i].goal && !seenGoals.has(dailyTasks[i].goal)) { %>
+              <% seenGoals.add(dailyTasks[i].goal); %>
+              <div class="goal-item">
+                <span class="goal-item__subject"><%= dailyTasks[i].subject %></span>
+                <span class="goal-item__text"><%= dailyTasks[i].goal %></span>
+              </div>
             <% } %>
-      </div>
-
-      <div class="card">
-        <p class="card-eyebrow">Upcoming Goals</p>
-        <% for(let i=0;i<dailyTasks.length ;i++){ %>
-
-          <%= dailyTasks[i].goal %> <br>
-            <% } %>
+          <% } %>
+        </div>
 
       </div>
-    </div>
-    
-        
+    <% } %>
+
   </main>
-
-  <script>
-    // Dynamic greeting based on time of day
-    const h = new Date().getHours();
-    const greeting = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-    document.getElementById("greeting").textContent = greeting + ". Here's your plan.";
-  </script>
 
 </body>
 

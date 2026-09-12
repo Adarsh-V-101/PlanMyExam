@@ -21,6 +21,7 @@ app.post('/login', routes);
 app.get('/home', loginMiddleware, routes);
 app.get('/dashboard',loginMiddleware, routes);
 app.get('/test', routes);
+app.post('/test-email', loginMiddleware, routes);
 
 mongoose.connect(process.env.CONNECTION_STRING).then(() => {
   console.log('MongoDB connected');

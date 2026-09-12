@@ -25,7 +25,6 @@ const startDailyReminder = async () => {
   try {
     const users = await userModel.find({}).populate("taskId");
 
-    console.log(users.length + " users found with tasks"); // for debugging
 
     for (const user of users) {
       const todaysTasks = [];
